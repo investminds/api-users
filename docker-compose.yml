@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  server:
+    container_name: raceit-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT}
+    networks:
+      - db-network
+    depends_on:
+      - database
+
+  database:
+    container_name: mongo-db
+    image: mongo
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - db-network
+    volumes:
+      - mongo-data:/data/db
+    env_file:
+      - .env
+
+networks:
+  db-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
